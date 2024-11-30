@@ -61,9 +61,36 @@ export const load: PageServerLoad = async ({ locals }) => {
   `;
     const artists = await db.prepare(artistsQuery).all();
 
+    const eventTypesQuery = `   
+    SELECT 
+      ue.artist_id,
+      a.name as artist_name,
+      ue.event_type,
+      COUNT(*) as count,
+      CASE ue.event_type
+        WHEN 'share_track' THEN 3
+        WHEN 'like_track' THEN 2
+        WHEN 'add_track_to_playlist' THEN 2
+        WHEN 'play_track' THEN 1
+      END as weight,
+      COUNT(*) * CASE ue.event_type
+        WHEN 'share_track' THEN 3
+        WHEN 'like_track' THEN 2
+        WHEN 'add_track_to_playlist' THEN 2
+        WHEN 'play_track' THEN 1
+      END as weighted_count
+    FROM user_events ue
+    JOIN artists a ON ue.artist_id = a.id
+    WHERE ue.event_type IN ('share_track', 'like_track', 'add_track_to_playlist', 'play_track')
+    GROUP BY ue.artist_id, a.name, ue.event_type
+    ORDER BY ue.artist_id, weighted_count DESC;
+        `;
+    const eventTypes = await db.prepare(eventTypesQuery).all();
+
     return {
       data,
       artists,
+      eventTypes,
     };
   } catch (error) {
     console.error(error);

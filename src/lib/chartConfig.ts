@@ -10,7 +10,8 @@ export const colors = [
     '#2ecc71'  // Saturday - Green
 ];
 
-export const chartOptions = {
+
+const baseChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -21,7 +22,14 @@ export const chartOptions = {
         tooltip: {
             mode: 'index' as const,
             intersect: false
-        },
+        }
+    }
+};
+
+export const hourlyChartOptions = {
+    ...baseChartOptions,
+    plugins: {
+        ...baseChartOptions.plugins,
         legend: {
             position: 'bottom' as const,
             labels: {
@@ -50,5 +58,70 @@ export const chartOptions = {
                 color: '#e2e8f0'
             }
         }
+    }
+};
+
+// Daily engagement chart options
+export const dailyChartOptions = {
+    ...baseChartOptions,
+    plugins: {
+        ...baseChartOptions.plugins,
+        legend: {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Average Engagement'
+            },
+            grid: {
+                color: '#e2e8f0'
+            }
+        },
+        x: {
+            title: {
+                display: true,
+                text: 'Day of Week'
+            },
+            grid: {
+                color: '#e2e8f0'
+            }
+        }
+    }
+};
+
+// Pie chart options for engagement types
+export const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            position: 'right' as const,
+            labels: {
+                usePointStyle: true,
+                padding: 20
+            }
+        },
+        tooltip: {
+            callbacks: {
+                label: (context: any) => `${context.label}: ${context.raw} points`
+            }
+        }
+    }
+};
+
+// Dataset styles for each chart type
+export const chartStyles = {
+    daily: {
+        backgroundColor: '#e2e8f0',
+        borderColor: '#64748b',
+        borderWidth: 1
+    },
+    pie: {
+        backgroundColor: colors.slice(0, 4),  // Use first 4 colors for the 4 engagement types
+        borderWidth: 1
     }
 };
