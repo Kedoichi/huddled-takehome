@@ -2,23 +2,56 @@
   let { artistVisits } = $props();
 
   function formatDuration(duration: number): string {
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
+  if (duration <= 0) return '0 seconds';
 
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  const seconds = Math.floor(duration / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  // Get the remaining minutes and seconds after calculating hours
+  const remainingMinutes = minutes % 60;
+  const remainingSeconds = seconds % 60;
+
+  let result = '';
+
+  if (hours > 0) {
+    result += `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
   }
+
+  if (remainingMinutes > 0) {
+    if (result) result += ' ';
+    result += `${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+  }
+
+  if (remainingSeconds > 0 || result === '') {
+    if (result) result += ' ';
+    result += `${remainingSeconds} ${remainingSeconds === 1 ? 'second' : 'seconds'}`;
+  }
+
+  return result;
+}
+
 </script>
 
 <div class="overflow-x-auto">
-  <div class="min-w-max w-[60rem] h-[60rem] overflow-y-auto relative scrollbar-pretty">
+  <div class="min-w-max w-[60rem] h-[60vh] overflow-y-auto relative scrollbar-pretty">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead
         class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0"
       >
         <tr>
-          <th scope="col" class="px-6 py-3">Artist Id</th>
-          <th scope="col" class="px-6 py-3">Artist Name</th>
-          <th scope="col" class="px-6 py-3">Total Time Spent (minutes)</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Artist ID
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Artist Name
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Total Interaction Time
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Unique Visitors
+        </th>
         </tr>
       </thead>
       <tbody>
@@ -38,7 +71,7 @@
               {formatDuration(total_visit_duration)}
             </td>
             <td class="px-6 py-4">
-              {formatDuration(unique_session_count)}
+              {unique_session_count}
             </td>
           </tr>
         {/each}
