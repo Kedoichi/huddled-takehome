@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.9",
-		"better-sqlite3": "^11.1.2"
+		"better-sqlite3": "^11.1.2",
+		"chart.js": "^4.4.6"
 	}
 }
